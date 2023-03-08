@@ -1,0 +1,8 @@
+DELETE FROM Distance;
+DELETE FROM Environment;
+DELETE FROM GPS;
+DELETE FROM Image;
+DELETE FROM WheelState;
+DELETE FROM MotorAxle;
+DELETE FROM IMU;
+DELETE FROM dirve_time_interval;
