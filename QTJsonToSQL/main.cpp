@@ -267,13 +267,11 @@ int main(int argc, char* argv[])
 	}
 	QSqlQuery dirve_time_interval_qry;
 	QString remark = "";
-	dirve_time_interval_qry.prepare("INSERT INTO dirve_time_interval (id,start_time,end_time,remark)  "
-		"VALUES (:id,:start_time,:end_time, :remark)");
-	dirve_time_interval_qry.bindValue(":id", test_id);
-	dirve_time_interval_qry.bindValue(":start_time", start_time);
-	dirve_time_interval_qry.bindValue(":end_time", end_time);
-	dirve_time_interval_qry.bindValue(":remark", remark);
-	if (dirve_time_interval_qry.exec())
+	QString inser_SQL_string = ("INSERT INTO dirve_time_interval (id,start_time,end_time,remark) "
+		"VALUES (%1,FROM_UNIXTIME(%1),FROM_UNIXTIME(%3),%4,)\;\n");
+	inser_SQL_string = inser_SQL_string.arg(test_id).arg(start_time).arg(end_time).arg(remark);
+
+	if (dirve_time_interval_qry.exec(inser_SQL_string))
 	{
 		return true;
 	}
@@ -282,6 +280,7 @@ int main(int argc, char* argv[])
 		qDebug() << dirve_time_interval_qry.lastError();
 		return false;
 	}
+
 
 	qDebug() << "Done";
 	return a.exec();
