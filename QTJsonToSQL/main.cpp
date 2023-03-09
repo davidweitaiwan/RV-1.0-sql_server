@@ -30,8 +30,8 @@ int main(int argc, char* argv[])
 
 	QSqlDatabase db = QSqlDatabase::addDatabase("QMYSQL");
 	QUuid uuid = QUuid::createUuid();
-	QString test_id = uuid.toString();
-	double start_time = 3000000000;
+	QString test_id = uuid.toString().remove("{").remove("}");
+	double start_time = 0;
 	double end_time = 0;
 	if (!doucment.isNull() && (configJsonError.error == QJsonParseError::NoError)) {
 		if (doucment.isObject()) {
@@ -75,6 +75,10 @@ int main(int argc, char* argv[])
 				for (QString time_scale_key : time_scale_keys)
 				{
 					double time_in_json = time_scale_key.toDouble();
+					if (start_time == 0 && end_time == 0) {
+						start_time = time_in_json;
+						end_time = time_in_json;
+					}
 					if (start_time> time_in_json) {
 						start_time = time_in_json;
 					}
@@ -265,23 +269,18 @@ int main(int argc, char* argv[])
 			}
 		}
 	}
-	QSqlQuery dirve_time_interval_qry;
-	QString remark = "";
-	QString inser_SQL_string = ("INSERT INTO dirve_time_interval (id,start_time,end_time,remark) "
-		"VALUES (%1,FROM_UNIXTIME(%1),FROM_UNIXTIME(%3),%4,)\;\n");
-	inser_SQL_string = inser_SQL_string.arg(test_id).arg(start_time).arg(end_time).arg(remark);
+	if (!(start_time == 0 && end_time == 0)) {
+		QSqlQuery dirve_time_interval_qry;
+		QString remark = "";
+		QString inser_SQL_string = ("INSERT INTO dirve_time_interval (id,start_time,end_time,remark) "
+			"VALUES ('%1',FROM_UNIXTIME(%2),FROM_UNIXTIME(%3),'%4')\;\n");
+		inser_SQL_string = inser_SQL_string.arg(test_id).arg(start_time, 0, 'f', 6).arg(end_time, 0, 'f', 6).arg(remark);
 
-	if (dirve_time_interval_qry.exec(inser_SQL_string))
-	{
-		return true;
+		if (!dirve_time_interval_qry.exec(inser_SQL_string))
+		{
+			qDebug() << dirve_time_interval_qry.lastError();
+		}
 	}
-	else
-	{
-		qDebug() << dirve_time_interval_qry.lastError();
-		return false;
-	}
-
-
 	qDebug() << "Done";
 	return a.exec();
 }
