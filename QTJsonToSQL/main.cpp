@@ -17,10 +17,45 @@ namespace fs = std::filesystem;
 using namespace std;
 using namespace Sensors;
 
+bool PutJsonInDB( );
+bool DumpSQLFile();
 int main(int argc, char* argv[])
 {
 	QCoreApplication a(argc, argv);
 
+
+	int commandChoice = 0;
+	printf("1:Put Json file data to Database and be sure your config json file dir and Database connection.\n");
+	printf("2:Dump Mysql database with SQL file.\n");
+
+	while (commandChoice >= 0) {
+		if (commandChoice ==1) {
+			bool isDone = false;
+			isDone =PutJsonInDB();
+			if (isDone)
+			{
+				printf("Put Json to DB finished\n");
+			}
+
+		}
+		if (commandChoice ==2)
+		{
+			bool isDone = false;
+			isDone = DumpSQLFile();
+			if (isDone)
+			{
+				printf("Dump SQL File finished\n");
+			}
+
+		}
+		printf("Enten command number to continue:\n");
+		scanf("%d", &commandChoice);
+	}
+	qDebug() << "Done";
+	return a.exec();
+}
+
+bool PutJsonInDB( ) {
 	QString hostName, databaseName, userName, password, JsonDir;
 	QFile configFile("./config.json");
 	configFile.open(QIODevice::ReadOnly | QIODevice::Text);
@@ -28,11 +63,8 @@ int main(int argc, char* argv[])
 	QJsonParseError configJsonError;
 	QJsonDocument doucment = QJsonDocument::fromJson(configData, &configJsonError);
 
-	QSqlDatabase db = QSqlDatabase::addDatabase("QMYSQL");
-	QUuid uuid = QUuid::createUuid();
-	QString test_id = uuid.toString().remove("{").remove("}");
-	double start_time = 0;
-	double end_time = 0;
+
+
 	if (!doucment.isNull() && (configJsonError.error == QJsonParseError::NoError)) {
 		if (doucment.isObject()) {
 			QJsonObject ConfigObject = doucment.object();
@@ -43,24 +75,28 @@ int main(int argc, char* argv[])
 			JsonDir = ConfigObject.value("JsonDir").toString();
 		}
 	}
-	std::string path = JsonDir.toStdString();
+	string path = JsonDir.toStdString();
 
+
+	QSqlDatabase db = QSqlDatabase::addDatabase("QMYSQL");
 	db.setHostName(hostName);
 	db.setDatabaseName(databaseName);
 	db.setUserName(userName);
 	db.setPassword(password);
 
 	if (!db.open()) {
-		printf("Exit not connection~!");
+		printf("Can't not find database!");
 	}
-
-
+	double start_time = 0;
+	double end_time = 0;
+	QUuid uuid = QUuid::createUuid();
+	QString test_id = uuid.toString().remove("{").remove("}");
 	for (const auto& entry : fs::directory_iterator(path)) {
 		std::cout << entry.path() << std::endl;
 		QFile inFile(entry.path());
 		inFile.open(QIODevice::ReadOnly | QIODevice::Text);
 		QByteArray data = inFile.readAll();
-		qDebug() << "Jsonfile:";
+		qDebug() << "Jsonfile:"<< QString::fromStdString(path);
 
 		QJsonParseError jsonError;
 		QJsonDocument configDoucment = QJsonDocument::fromJson(data, &jsonError);
@@ -79,7 +115,7 @@ int main(int argc, char* argv[])
 						start_time = time_in_json;
 						end_time = time_in_json;
 					}
-					if (start_time> time_in_json) {
+					if (start_time > time_in_json) {
 						start_time = time_in_json;
 					}
 					if (end_time < time_in_json) {
@@ -252,6 +288,7 @@ int main(int argc, char* argv[])
 					if (time_scale_key == time_scale_keys[time_scale_keys.length() - 1]) {
 						qDebug() << time_scale_key;
 					}
+					//SQL語法做字串合併並執行
 					if (SQLCommandCounter == 30 || time_scale_key == time_scale_keys[time_scale_keys.length() - 1]) {
 						SQLCommandCounter = 0;
 						QSqlQuery AllSQLCommand;
@@ -281,6 +318,77 @@ int main(int argc, char* argv[])
 			qDebug() << dirve_time_interval_qry.lastError();
 		}
 	}
-	qDebug() << "Done";
-	return a.exec();
+	db.close();
+	return true;
+}
+
+bool DumpSQLFile() {
+	QString hostName, databaseName, userName, password, JsonDir;
+	QFile configFile("./config.json");
+	configFile.open(QIODevice::ReadOnly | QIODevice::Text);
+	QByteArray configData = configFile.readAll();
+	QJsonParseError configJsonError;
+	QJsonDocument doucment = QJsonDocument::fromJson(configData, &configJsonError);
+
+
+
+	if (!doucment.isNull() && (configJsonError.error == QJsonParseError::NoError)) {
+		if (doucment.isObject()) {
+			QJsonObject ConfigObject = doucment.object();
+			hostName = ConfigObject.value("HostName").toString();
+			databaseName = ConfigObject.value("DatabaseName").toString();
+			userName = ConfigObject.value("UserName").toString();
+			password = ConfigObject.value("Password").toString();
+			JsonDir = ConfigObject.value("JsonDir").toString();
+		}
+	}
+	string path = JsonDir.toStdString();
+
+
+	QSqlDatabase db = QSqlDatabase::addDatabase("QMYSQL");
+	db.setHostName(hostName);
+	db.setDatabaseName(databaseName);
+	db.setUserName(userName);
+	db.setPassword(password);
+
+	if (!db.open()) {
+		printf("Can't not find database!");
+	}
+	// 取得所有資料表名稱
+	QStringList tables = db.tables();
+	QFile sqlFile("export.sql");
+	if (!sqlFile.open(QIODevice::WriteOnly | QIODevice::Text)) {
+		qWarning("Cannot create SQL file");
+		return 1;
+	}
+	// 使用 mysqldump 命令將資料庫匯出到指定檔案
+	QProcess process;
+	QString windowscmd = "C:\\\"Program Files\"\\MySQL\\\"MySQL Server 8.0\"\\bin\\mysqldump.exe --host=" + hostName + " --user=" + userName + " --password=" + password + " -B " + databaseName + " -r export.sql";
+	int windowsSys = 0;
+	printf("if you are windows enter '1',linux enter any number?\n");
+	scanf("%d", &windowsSys);
+	if (windowsSys == 1) {
+		process.start("cmd.exe",QStringList()<<"/c"<< windowscmd);
+	}
+	else
+	{
+		process.start("mysqldump --host=" + hostName + " --user=" + userName + " --password=" + password + " -B " + databaseName + " -r export.sql");
+
+	}
+	if (!process.waitForStarted()) {
+		qWarning() << "Failed to start mysqldump process";
+		return false;
+	}
+	if (!process.waitForFinished()) {
+		qWarning() << "Failed to finish mysqldump process";
+		return false;
+	}
+	if (process.exitCode() != 0) {
+		qWarning() << "mysqldump process exited with error code" << process.exitCode();
+		return false;
+	}
+
+	qDebug() << "Exported database" << databaseName << "to file" << ".";
+		return true;
+
 }
