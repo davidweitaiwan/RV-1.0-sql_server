@@ -24,9 +24,22 @@ https://dev.mysql.com/downloads/mysql/
 進入安裝程序請選用MySQL Server
 
 #### Linux
-使用指令
+Ubuntu 安裝QT及mysql驅動
+```bash
+sudo apt update
+sudo apt install build-essential
+sudo apt-get install cmake
+sudo apt-get install qt6-base-dev
+sudo apt-get install libqt6sql6-mysql
+```
+MySQL Client指令
 ```bash
 apt-get install mysql-client-*
+```
+Linux 編譯
+```bahe
+cmake .
+make
 ```
 
 # MySQL Server X Linux
