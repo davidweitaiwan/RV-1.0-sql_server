@@ -395,6 +395,12 @@ FodyWeavers.xsd
 *.msp
 
 # JetBrains Rider
-*.sln.iml
+*.sln.imls
 QTJsonToSQL/export.sql
 *.json
+QTJsonToSQL/cmake_install.cmake
+QTJsonToSQL/CMakeFiles
+QTJsonToSQL/QTJsonToSQL_autogen
+QTJsonToSQL/Makefile
+QTJsonToSQL/CMakeCache.txt
+QTJsonToSQL/QTJsonToSQL

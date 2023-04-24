@@ -1,11 +1,11 @@
 #include <QtCore/QCoreApplication>
 #include <QtSql>
 #include <stdio.h>
-#include < QJsonObject >
-#include < QJsonArray > 
-#include < QJsonDocument > 
-#include < QJsonValue > 
-#include < QJsonParseError >
+#include <QJsonObject>
+#include <QJsonArray> 
+#include <QJsonDocument> 
+#include <QJsonValue> 
+#include <QJsonParseError>
 #include<stdio.h>
 #include <iostream>
 #include <QTimeZone>
@@ -13,6 +13,7 @@
 #include <filesystem>
 #include <string>
 #include<QUuid>
+#include<QFile>
 namespace fs = std::filesystem;
 using namespace std;
 using namespace Sensors;
@@ -153,9 +154,9 @@ bool PutJsonInDB( ) {
 							environment.Zonal_id = Zonal_id;
 							environment.Sensor_id = Sensor_id;
 							environment.device_id = Sensors_topic_ENV.value("device_id").toString();
-							environment.device_type = Sensors_topic_ENV.value("device_type").toInteger();
+							environment.device_type = Sensors_topic_ENV.value("device_type").toInt();
 							environment.pressure = Sensors_topic_ENV.value("pressure").toDouble();
-							environment.priority = Sensors_topic_ENV.value("priority").toInteger();
+							environment.priority = Sensors_topic_ENV.value("priority").toInt();
 							environment.relative_humidity = Sensors_topic_ENV.value("relative_humidity").toDouble();
 
 							environment.stamp = Sensors_topic_ENV.value("stamp").toDouble();
@@ -175,7 +176,7 @@ bool PutJsonInDB( ) {
 							iMU.Zonal_id = Zonal_id;
 							iMU.Sensor_id = Sensor_id;
 							iMU.device_id = Sensors_topic_IMU.value("device_id").toString();
-							iMU.device_type = Sensors_topic_IMU.value("device_type").toInteger();
+							iMU.device_type = Sensors_topic_IMU.value("device_type").toInt();
 							iMU.angular_velocity_x = Sensors_topic_IMU.value("angular_velocity").toArray()[0].toDouble();
 							iMU.angular_velocity_y = Sensors_topic_IMU.value("angular_velocity").toArray()[1].toDouble();
 							iMU.angular_velocity_z = Sensors_topic_IMU.value("angular_velocity").toArray()[2].toDouble();
@@ -186,7 +187,7 @@ bool PutJsonInDB( ) {
 							iMU.orientation_1 = Sensors_topic_IMU.value("orientation").toArray()[1].toDouble();
 							iMU.orientation_2 = Sensors_topic_IMU.value("orientation").toArray()[2].toDouble();
 							iMU.orientation_3 = Sensors_topic_IMU.value("orientation").toArray()[3].toDouble();
-							iMU.priority = Sensors_topic_IMU.value("priority").toInteger();
+							iMU.priority = Sensors_topic_IMU.value("priority").toInt();
 							//iMU.stamp = QDateTime::fromMSecsSinceEpoch(((int64_t)(Sensors_topic_IMU.value("stamp").toDouble() * 1000)), QTimeZone::systemTimeZone());
 							iMU.stamp_type = Sensors_topic_IMU.value("stamp_type").toInt();
 							iMU.unit_type = Sensors_topic_IMU.value("unit_type").toInt();
@@ -204,11 +205,11 @@ bool PutJsonInDB( ) {
 							gPS.Zonal_id = Zonal_id;
 							gPS.Sensor_id = Sensor_id;
 							gPS.device_id = Sensors_topic_GPS.value("device_id").toString();
-							gPS.device_type = Sensors_topic_GPS.value("device_type").toInteger();
+							gPS.device_type = Sensors_topic_GPS.value("device_type").toInt();
 							gPS.gps_status = Sensors_topic_GPS.value("gps_status").toInt();
 							gPS.latitude = Sensors_topic_GPS.value("latitude").toDouble();
 							gPS.longitude = Sensors_topic_GPS.value("longitude").toDouble();
-							gPS.priority = Sensors_topic_GPS.value("priority").toInteger();
+							gPS.priority = Sensors_topic_GPS.value("priority").toInt();
 							gPS.stamp = Sensors_topic_GPS.value("stamp").toDouble();
 							gPS.stamp_type = Sensors_topic_GPS.value("stamp_type").toInt();
 							SQLCommandString = SQLCommandString + gPS.db_insert_string();
@@ -225,11 +226,11 @@ bool PutJsonInDB( ) {
 							ultrasound.Zonal_id = Zonal_id;
 							ultrasound.Sensor_id = Sensor_id;
 							ultrasound.device_id = Sensors_topic_Ultrasound.value("device_id").toString();
-							ultrasound.device_type = Sensors_topic_Ultrasound.value("device_type").toInteger();
+							ultrasound.device_type = Sensors_topic_Ultrasound.value("device_type").toInt();
 							ultrasound.distance = Sensors_topic_Ultrasound.value("distance").toDouble();
 							ultrasound.max = Sensors_topic_Ultrasound.value("max").toDouble();
 							ultrasound.min = Sensors_topic_Ultrasound.value("min").toDouble();
-							ultrasound.priority = Sensors_topic_Ultrasound.value("priority").toInteger();
+							ultrasound.priority = Sensors_topic_Ultrasound.value("priority").toInt();
 							//ultrasound.stamp = QDateTime::fromMSecsSinceEpoch(((int64_t)(Sensors_topic_Ultrasound.value("stamp").toDouble() * 1000)), QTimeZone::systemTimeZone());
 							ultrasound.stamp = Sensors_topic_Ultrasound.value("stamp").toDouble();
 
@@ -248,11 +249,11 @@ bool PutJsonInDB( ) {
 							image.Sensor_id = Sensor_id;
 							image.time_index = QDateTime::fromMSecsSinceEpoch(((int64_t)(time_in_json * 1000)), QTimeZone::systemTimeZone());
 							image.device_id = ImageSensor.value("device_id").toString();
-							image.device_type = ImageSensor.value("device_type").toInteger();
+							image.device_type = ImageSensor.value("device_type").toInt();
 							image.filename = ImageSensor.value("filename").toString();
 							image.height = ImageSensor.value("height").toInt();
 							image.width = ImageSensor.value("width").toInt();
-							image.priority = ImageSensor.value("priority").toInteger();
+							image.priority = ImageSensor.value("priority").toInt();
 							image.stamp = ImageSensor.value("stamp").toDouble();
 							image.stamp_type = ImageSensor.value("stamp_type").toInt();
 							//image.insert();
@@ -268,15 +269,15 @@ bool PutJsonInDB( ) {
 							wheelState.Zonal_id = Zonal_id;
 							wheelState.Sensor_id = Sensor_id;
 							wheelState.device_id = remotecomm.value("device_id").toString();
-							wheelState.device_type = remotecomm.value("device_type").toInteger();
-							wheelState.button = remotecomm.value("button").toInteger();
-							wheelState.func = remotecomm.value("func").toInteger();
-							wheelState.gear = remotecomm.value("gear").toInteger();
-							wheelState.steering = remotecomm.value("steering").toInteger();
-							wheelState.pedal_brake = remotecomm.value("pedal_brake").toInteger();
-							wheelState.pedal_clutch = remotecomm.value("pedal_clutch").toInteger();
-							wheelState.pedal_throttle = remotecomm.value("pedal_throttle").toInteger();
-							wheelState.priority = remotecomm.value("priority").toInteger();
+							wheelState.device_type = remotecomm.value("device_type").toInt();
+							wheelState.button = remotecomm.value("button").toInt();
+							wheelState.func = remotecomm.value("func").toInt();
+							wheelState.gear = remotecomm.value("gear").toInt();
+							wheelState.steering = remotecomm.value("steering").toInt();
+							wheelState.pedal_brake = remotecomm.value("pedal_brake").toInt();
+							wheelState.pedal_clutch = remotecomm.value("pedal_clutch").toInt();
+							wheelState.pedal_throttle = remotecomm.value("pedal_throttle").toInt();
+							wheelState.priority = remotecomm.value("priority").toInt();
 							wheelState.stamp = remotecomm.value("stamp").toDouble();
 							wheelState.stamp_type = remotecomm.value("stamp_type").toInt();
 							SQLCommandString = SQLCommandString + wheelState.db_insert_string();

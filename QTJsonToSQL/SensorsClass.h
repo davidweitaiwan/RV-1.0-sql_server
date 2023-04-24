@@ -5,10 +5,12 @@
 #include <QSqlQuery>
 #include <QSqlError>
 #include <iostream>
+#include <QVariant>
+#include <QDebug>
 using namespace std;
 
-
 namespace Sensors {
+
 	class BaseSensorsClass {
 	public:
 		QDateTime time_index;
