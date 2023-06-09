@@ -8,7 +8,7 @@ set(CMAKE_AUTOUIC ON)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-find_package(Qt6 REQUIRED COMPONENTS Core Sql)
+find_package(Qt5 REQUIRED COMPONENTS Core Sql)
 
 
 add_executable(QTJsonToSQL
@@ -17,5 +17,5 @@ add_executable(QTJsonToSQL
     SensorsClass.h
 )
 
-target_link_libraries(QTJsonToSQL PRIVATE Qt6::Core Qt6::Sql) 
+target_link_libraries(QTJsonToSQL PRIVATE Qt5::Core Qt5::Sql) 
 
