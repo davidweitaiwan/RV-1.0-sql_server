@@ -16,7 +16,7 @@ CREATE TABLE `Distance` (
   `distance` float NOT NULL,
   PRIMARY KEY (`time_index`,`Vehicle_id`,`Zonal_id`,`Sensor_id`,`device_id`),
   KEY `Distance_time_index_IDX` (`time_index`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 -- drive.Environment definition
@@ -36,7 +36,7 @@ CREATE TABLE `Environment` (
   `relative_humidity` float NOT NULL,
   `pressure` float NOT NULL,
   PRIMARY KEY (`time_index`,`Vehicle_id`,`Zonal_id`,`Sensor_id`,`device_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 -- drive.GPS definition
@@ -55,7 +55,7 @@ CREATE TABLE `GPS` (
   `latitude` float NOT NULL,
   `longitude` float NOT NULL,
   PRIMARY KEY (`time_index`,`Vehicle_id`,`Zonal_id`,`Sensor_id`,`device_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 -- drive.IDTable definition
@@ -73,7 +73,7 @@ CREATE TABLE `IDTable` (
   `unit_type` int NOT NULL,
   `idtable` varchar(5400) NOT NULL,
   PRIMARY KEY (`time_index`,`Vehicle_id`,`Zonal_id`,`Sensor_id`,`device_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 -- drive.IMU definition
@@ -100,7 +100,7 @@ CREATE TABLE `IMU` (
   `linear_acceleration_y` double NOT NULL,
   `linear_acceleration_z` double NOT NULL,
   PRIMARY KEY (`time_index`,`Vehicle_id`,`Zonal_id`,`Sensor_id`,`device_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 -- drive.Image definition
@@ -119,7 +119,7 @@ CREATE TABLE `Image` (
   `height` int NOT NULL,
   `filename` varchar(1000) NOT NULL,
   PRIMARY KEY (`time_index`,`Vehicle_id`,`Zonal_id`,`Sensor_id`,`device_id`,`stamp`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 -- drive.MotorAxle definition
@@ -138,7 +138,7 @@ CREATE TABLE `MotorAxle` (
   `pwm` float NOT NULL,
   `parking` int NOT NULL,
   PRIMARY KEY (`time_index`,`Vehicle_id`,`Zonal_id`,`Sensor_id`,`device_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 -- drive.UPS definition
@@ -159,7 +159,7 @@ CREATE TABLE `UPS` (
   `amp_out` float NOT NULL,
   `temperature` float NOT NULL,
   PRIMARY KEY (`time_index`,`Vehicle_id`,`Zonal_id`,`Sensor_id`,`device_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 -- drive.WheelState definition
@@ -182,15 +182,15 @@ CREATE TABLE `WheelState` (
   `button` int NOT NULL,
   `func` int NOT NULL,
   PRIMARY KEY (`time_index`,`Vehicle_id`,`Zonal_id`,`Sensor_id`,`device_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 -- drive.dirve_time_interval definition
 
 CREATE TABLE `dirve_time_interval` (
-  `id` varchar(100) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL,
+  `id` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `start_time` timestamp(6) NOT NULL,
   `end_time` timestamp(6) NOT NULL,
   `remark` varchar(1000) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
