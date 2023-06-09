@@ -94,7 +94,7 @@ bool PutJsonInDB( ) {
 	QString test_id = uuid.toString().remove("{").remove("}");
 	for (const auto& entry : fs::directory_iterator(path)) {
 		std::cout << entry.path() << std::endl;
-		QFile inFile(entry.path());
+		QFile inFile(QString::fromStdString(entry.path()));
 		inFile.open(QIODevice::ReadOnly | QIODevice::Text);
 		QByteArray data = inFile.readAll();
 		qDebug() << "Jsonfile:"<< QString::fromStdString(path);
